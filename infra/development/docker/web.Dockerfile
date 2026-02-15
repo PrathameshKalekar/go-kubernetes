@@ -1,0 +1,23 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Build args for client-side URLs (browser connects to these from your machine)
+ARG NEXT_PUBLIC_API_URL=http://localhost:8081
+ARG NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:8081/ws
+ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_WEBSOCKET_URL=$NEXT_PUBLIC_WEBSOCKET_URL
+ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
+COPY web/package*.json ./
+
+RUN npm install
+
+COPY web ./
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "start"]
